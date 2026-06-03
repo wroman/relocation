@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relocation Scorecard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f0e4; --paper2:#efe7d6; --ink:#23272e; --ink2:#4a4640;
+    --line:#d8cdb5; --gold:#a8842c; --burg:#7a2230; --forest:#2f5d45;
+    --s5:#2f6b4f; --s4:#6f9a5e; --s3:#c2982c; --s2:#c47a3c; --s1:#aa4530;
+    --shadow:0 1px 0 rgba(0,0,0,.04),0 8px 30px rgba(40,30,10,.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% -10%, #fbf6ec 0%, transparent 55%),
+      radial-gradient(circle at 100% 0%, #f0e7d3 0%, transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"Newsreader", Georgia, "Iowan Old Style", serif;
+    font-size:16px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:38px 24px 80px;}
+  header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px;}
+  .kicker{font-family:"Fraunces",serif;font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--burg);margin:0 0 6px;}
+  h1{font-family:"Fraunces",serif;font-weight:800;font-size:clamp(34px,6vw,58px);line-height:.98;margin:0;letter-spacing:-.01em;}
+  .dek{font-style:italic;color:var(--ink2);font-size:18px;margin:14px 0 0;max-width:60ch;}
+  .priorities{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0;}
+  .pchip{font-family:"Fraunces",serif;font-weight:600;font-size:13px;letter-spacing:.02em;padding:5px 13px;border:1px solid var(--gold);border-radius:2px;background:rgba(168,132,44,.08);color:var(--ink);}
+  .pchip b{color:var(--burg);}
+  .note{font-size:13.5px;color:var(--ink2);font-style:italic;margin-top:14px;max-width:74ch;}
+
+  .panel{margin:30px 0 22px;background:rgba(255,255,255,.45);border:1px solid var(--line);border-radius:4px;padding:18px 20px 8px;box-shadow:var(--shadow);}
+  .panel-h{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+  .panel-h h2{font-family:"Fraunces",serif;font-weight:600;font-size:16px;letter-spacing:.04em;text-transform:uppercase;margin:0;color:var(--ink);}
+  .reset{font-family:"Fraunces",serif;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;background:none;border:1px solid var(--ink2);color:var(--ink2);padding:5px 12px;border-radius:2px;cursor:pointer;transition:.15s;}
+  .reset:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:6px 26px;}
+  .slider{padding:7px 0;border-bottom:1px dotted var(--line);}
+  .slider .lab{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;}
+  .slider .lab .nm{font-weight:500;}
+  .slider .lab .nm.pri::after{content:"●";color:var(--gold);font-size:9px;vertical-align:super;margin-left:4px;}
+  .slider .lab .val{font-family:"Fraunces",serif;font-weight:600;color:var(--burg);font-variant-numeric:tabular-nums;}
+  input[type=range]{width:100%;accent-color:var(--forest);height:4px;cursor:pointer;margin-top:5px;}
+
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);background:#fff;}
+  table{border-collapse:collapse;width:100%;min-width:980px;}
+  thead th{position:sticky;top:0;background:var(--ink);color:var(--paper);font-family:"Fraunces",serif;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;padding:11px 7px;text-align:center;border-right:1px solid #3a3f47;vertical-align:bottom;}
+  thead th.town{text-align:left;padding-left:16px;width:230px;}
+  thead th.pri{background:#3a2e16;}
+  thead th.tot{background:var(--burg);}
+  thead th .ph{display:block;font-size:8.5px;color:var(--gold);letter-spacing:.12em;margin-bottom:2px;}
+  tbody td{padding:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;}
+  tbody tr:nth-child(even){background:var(--paper);}
+  td.town{text-align:left;padding:11px 14px;border-right:2px solid var(--line);}
+  td.town .rank{font-family:"Fraunces",serif;font-weight:800;color:var(--gold);font-size:13px;margin-right:8px;}
+  td.town .nm{font-family:"Fraunces",serif;font-weight:600;font-size:16.5px;color:var(--ink);}
+  td.town .meta{display:block;font-size:12px;color:var(--ink2);font-style:italic;margin-top:1px;line-height:1.3;}
+  .cell{display:block;font-family:"Fraunces",serif;font-weight:600;font-size:15px;padding:13px 4px;color:#fff;font-variant-numeric:tabular-nums;}
+  .s5{background:var(--s5);} .s4{background:var(--s4);} .s3{background:var(--s3);} .s2{background:var(--s2);} .s1{background:var(--s1);}
+  td.tot{border-right:none;}
+  .totbar{position:relative;padding:11px 10px;}
+  .totnum{font-family:"Fraunces",serif;font-weight:800;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .tottrack{height:5px;background:var(--paper2);border-radius:3px;margin-top:6px;overflow:hidden;}
+  .totfill{height:100%;background:linear-gradient(90deg,var(--forest),var(--gold));border-radius:3px;transition:width .4s cubic-bezier(.2,.7,.2,1);}
+  tr.leader td{background:rgba(168,132,44,.13)!important;}
+  tr.leader td.town{box-shadow:inset 4px 0 0 var(--gold);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:18px 2px 0;font-size:13px;color:var(--ink2);}
+  .legend .sw{display:inline-flex;align-items:center;gap:6px;}
+  .legend .box{width:15px;height:15px;border-radius:2px;display:inline-block;}
+  footer{margin-top:30px;font-size:13px;color:var(--ink2);line-height:1.65;border-top:1px solid var(--line);padding-top:18px;}
+  footer b{color:var(--ink);font-weight:600;}
+  @media(max-width:640px){ .wrap{padding:24px 12px 60px;} .dek{font-size:16px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <p class="kicker">Family Relocation · Decision Dossier</p>
+    <h1>Where to Plant</h1>
+    <p class="dek">Every town we've seriously weighed, the Appalachian Arc, the Rockies, the Texas Hill Country, the Ozarks, Colorado, and Portsmouth, scored against your priorities. Move the weights; the ranking re-sorts to your values, not mine.</p>
+    <div class="priorities">
+      <span class="pchip"><b>Priority 1.</b> Low crime &amp; civic order</span>
+      <span class="pchip"><b>Priority 2.</b> Christian community</span>
+      <span class="pchip"><b>Priority 3.</b> Demographic continuity</span>
+    </div>
+    <p class="note">Scores are 1–5, calibrated from our research and my judgment, not surveyed data; treat them as a structured starting point and verify any town before a visit. "Continuity" measures stability of demographic composition (low churn) and alignment with your stated preference, not a static snapshot. Dotted ● marks your three priority criteria.</p>
+  </header>
+
+  <div class="panel">
+    <div class="panel-h">
+      <h2>Weight your criteria</h2>
+      <button class="reset" id="reset">Reset to your stated priorities</button>
+    </div>
+    <div class="sliders" id="sliders"></div>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr id="head"></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <span class="sw"><span class="box" style="background:var(--s5)"></span>5 Excellent</span>
+    <span class="sw"><span class="box" style="background:var(--s4)"></span>4 Strong</span>
+    <span class="sw"><span class="box" style="background:var(--s3)"></span>3 Mixed</span>
+    <span class="sw"><span class="box" style="background:var(--s2)"></span>2 Weak</span>
+    <span class="sw"><span class="box" style="background:var(--s1)"></span>1 Poor</span>
+  </div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const criteria = [
+  {key:'crime',        label:'Crime & Civic Order', ph:'Priority 1', w:3.0, pri:true},
+  {key:'christian',    label:'Christian Community',  ph:'Priority 2', w:3.0, pri:true},
+  {key:'continuity',   label:'Demographic Continuity',ph:'Priority 3',w:2.5, pri:true},
+  {key:'outdoors',     label:'Outdoors & Landscape', ph:'',          w:2.0, pri:false},
+  {key:'walkable',     label:'Walkable Core',        ph:'',          w:1.5, pri:false},
+  {key:'cost',         label:'Affordability',        ph:'',          w:1.5, pri:false},
+  {key:'connectivity', label:'Connectivity',         ph:'',          w:1.5, pri:false},
+  {key:'tax',          label:'Tax Climate',          ph:'',          w:1.0, pri:false},
+  {key:'climate',      label:'Climate (mildness)',   ph:'',          w:1.0, pri:false},
+];
+const DEFAULT = Object.fromEntries(criteria.map(c=>[c.key,c.w]));
+
+const towns = [
+  {nm:'Franklin, TN', meta:'Williamson Co. · Appalachian fringe · road trip',
+   s:{crime:5,christian:5,continuity:4.5,outdoors:3.5,walkable:4,cost:2.5,connectivity:4.5,tax:5,climate:4}},
+  {nm:'Maryville, TN', meta:'Blount Co. · East TN / Smokies · added finalist',
+   s:{crime:4.5,christian:4,continuity:5,outdoors:5,walkable:3.5,cost:4,connectivity:4,tax:5,climate:4}},
+  {nm:'Chattanooga, TN', meta:'Appalachian Arc · road trip',
+   s:{crime:3.5,christian:4.5,continuity:3.5,outdoors:4.5,walkable:4,cost:4,connectivity:4,tax:5,climate:4}},
+  {nm:'Greenville, SC', meta:'Appalachian Arc · road trip',
+   s:{crime:3.5,christian:4.5,continuity:3.5,outdoors:4,walkable:4.5,cost:4,connectivity:4,tax:3.5,climate:4}},
+  {nm:'Brevard, NC', meta:'Western NC · road trip',
+   s:{crime:4.5,christian:3.5,continuity:4,outdoors:5,walkable:4,cost:3,connectivity:3,tax:3.5,climate:4}},
+  {nm:'Hendersonville, NC', meta:'Western NC · road trip',
+   s:{crime:4.5,christian:3.5,continuity:4,outdoors:4.5,walkable:4,cost:3.5,connectivity:3.5,tax:3.5,climate:4}},
+  {nm:'Charlottesville, VA', meta:'Blue Ridge · cut from trip',
+   s:{crime:3.5,christian:3,continuity:3,outdoors:4.5,walkable:4.5,cost:2.5,connectivity:3.5,tax:2.5,climate:4}},
+  {nm:'Bentonville, AR', meta:'Ozarks · road-trip start',
+   s:{crime:4,christian:3.5,continuity:2,outdoors:4.5,walkable:4.5,cost:4,connectivity:3.5,tax:2.5,climate:3.5}},
+  {nm:'Boise, ID', meta:'Snake River foothills · finalist',
+   s:{crime:4.5,christian:3,continuity:3,outdoors:5,walkable:4,cost:3,connectivity:2.5,tax:3,climate:3.5}},
+  {nm:'Bozeman, MT', meta:'Gallatin Valley · Rockies finalist',
+   s:{crime:4.5,christian:2.5,continuity:3,outdoors:5,walkable:4,cost:2,connectivity:2.5,tax:3.5,climate:2}},
+  {nm:"Coeur d'Alene, ID", meta:'Idaho panhandle · Rockies finalist',
+   s:{crime:4.5,christian:3,continuity:4,outdoors:5,walkable:4,cost:2.5,connectivity:2.5,tax:3,climate:2.5}},
+  {nm:'Colorado Springs, CO', meta:'Front Range · added finalist',
+   s:{crime:3.5,christian:5,continuity:3,outdoors:5,walkable:3.5,cost:3,connectivity:3.5,tax:3,climate:3.5}},
+  {nm:'Dripping Springs, TX', meta:'Hays Co. · Central TX / stay option',
+   s:{crime:4,christian:3.5,continuity:3,outdoors:3,walkable:3,cost:3,connectivity:4.5,tax:4,climate:2.5}},
+  {nm:'Portsmouth, NH', meta:'Seacoast New England · added by request',
+   s:{crime:5,christian:2,continuity:5,outdoors:4,walkable:5,cost:2,connectivity:4,tax:4,climate:2}},
+  {nm:'Whitefish, MT', meta:'Flathead Valley · Rockies',
+   s:{crime:4.5,christian:2.5,continuity:3.5,outdoors:5,walkable:4,cost:1.5,connectivity:2,tax:3.5,climate:2}},
+  {nm:'Sandpoint, ID', meta:'Idaho panhandle · Rockies',
+   s:{crime:4.5,christian:3,continuity:4,outdoors:5,walkable:4,cost:2.5,connectivity:2,tax:3,climate:2.5}},
+  {nm:'Hamilton, MT', meta:'Bitterroot Valley · Rockies',
+   s:{crime:4.5,christian:2.5,continuity:4.5,outdoors:5,walkable:3,cost:3,connectivity:2,tax:3.5,climate:2.5}},
+  {nm:'Georgetown, TX', meta:'Williamson Co. · best Texas square',
+   s:{crime:4,christian:3.5,continuity:3,outdoors:3,walkable:4.5,cost:3.5,connectivity:4.5,tax:4,climate:2.5}},
+  {nm:'Boerne, TX', meta:'Kendall Co. · Hill Country core',
+   s:{crime:4.5,christian:3.5,continuity:4,outdoors:3,walkable:4.5,cost:3,connectivity:4,tax:4,climate:2.5}},
+  {nm:'Fredericksburg, TX', meta:'Gillespie Co. · Hill Country core',
+   s:{crime:4.5,christian:3.5,continuity:4.5,outdoors:3.5,walkable:4.5,cost:2.5,connectivity:3,tax:4,climate:2.5}},
+  {nm:'Wimberley, TX', meta:'Hays Co. · Central TX village',
+   s:{crime:4,christian:3,continuity:3,outdoors:3,walkable:3,cost:2.5,connectivity:4,tax:4,climate:2.5}},
+  {nm:'Driftwood, TX', meta:'Hays Co. · Central TX rural',
+   s:{crime:4.5,christian:3,continuity:3.5,outdoors:3,walkable:1.5,cost:2,connectivity:4,tax:4,climate:2.5}},
+  {nm:'West Austin (Cuernavaca), TX', meta:'Travis Co. · current home / stay',
+   s:{crime:3,christian:4,continuity:2.5,outdoors:3,walkable:2.5,cost:1.5,connectivity:5,tax:4,climate:2.5}},
+];
+
+let weights = {...DEFAULT};
+
+function scoreClass(v){ if(v>=4.5)return's5'; if(v>=3.5)return's4'; if(v>=2.5)return's3'; if(v>=1.5)return's2'; return's1'; }
+function fmt(v){ return Number.isInteger(v)? v : v.toFixed(1); }
+
+function buildHead(){
+  const tr=document.getElementById('head');
+  tr.innerHTML='<th class="town">Town</th>'+
+    criteria.map(c=>`<th class="${c.pri?'pri':''}">${c.ph?`<span class="ph">${c.ph}</span>`:''}${c.label.replace(' & ','<br>& ').replace(' (','<br>(')}</th>`).join('')+
+    '<th class="tot">Weighted<br>Score</th>';
+}
+function buildSliders(){
+  const box=document.getElementById('sliders');
+  box.innerHTML=criteria.map(c=>`
+    <div class="slider">
+      <div class="lab"><span class="nm ${c.pri?'pri':''}">${c.label}</span><span class="val" id="v-${c.key}">${fmt(weights[c.key])}</span></div>
+      <input type="range" min="0" max="5" step="0.5" value="${weights[c.key]}" data-k="${c.key}">
+    </div>`).join('');
+  box.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      const k=e.target.dataset.k; weights[k]=parseFloat(e.target.value);
+      document.getElementById('v-'+k).textContent=fmt(weights[k]);
+      render();
+    });
+  });
+}
+function render(){
+  const sumW=Object.values(weights).reduce((a,b)=>a+b,0)||1;
+  const max=5*sumW;
+  const rows=towns.map(t=>{
+    const tot=criteria.reduce((a,c)=>a+t.s[c.key]*weights[c.key],0);
+    return {t, tot, pct: max? (tot/max*100):0};
+  }).sort((a,b)=>b.tot-a.tot);
+  const body=document.getElementById('body');
+  body.innerHTML=rows.map((r,i)=>{
+    const cells=criteria.map(c=>{
+      const v=r.t.s[c.key];
+      return `<td><span class="cell ${scoreClass(v)}">${fmt(v)}</span></td>`;
+    }).join('');
+    return `<tr class="${i===0?'leader':''}">
+      <td class="town"><span class="rank">${i+1}</span><span class="nm">${r.t.nm}</span><span class="meta">${r.t.meta}</span></td>
+      ${cells}
+      <td class="tot"><div class="totbar"><div class="totnum">${r.pct.toFixed(0)}</div><div class="tottrack"><div class="totfill" style="width:${r.pct}%"></div></div></div></td>
+    </tr>`;
+  }).join('');
+}
+document.getElementById('reset').addEventListener('click',()=>{
+  weights={...DEFAULT};
+  document.querySelectorAll('#sliders input').forEach(inp=>{
+    inp.value=weights[inp.dataset.k];
+    document.getElementById('v-'+inp.dataset.k).textContent=fmt(weights[inp.dataset.k]);
+  });
+  render();
+});
+document.getElementById('foot').innerHTML=
+  `<b>How to read it.</b> The weighted score (0–100) is each town's scores multiplied by your weights, normalized so 100 = a perfect 5 on every criterion. The table re-sorts live as you drag the sliders, so you can watch the ranking change when, say, you push Christian community up or climate down. `+
+  `<b>What the defaults say.</b> With your stated priorities (crime, Christian community, and continuity weighted highest), Tennessee leads: Maryville and Franklin run neck-and-neck at the top, followed by Chattanooga, Greenville, and the Western NC towns, with Colorado Springs close behind on the strength of its church depth and outdoors. `+
+  `<b>Where the new towns land.</b> The Texas Hill Country cores, Fredericksburg, Boerne, and Georgetown, are the strongest stay-in-Texas options, scoring well on civic order, walkable cores, demographic continuity, and their own conservative county governance, but losing on outdoors and summer heat. The Rockies towns (Whitefish, Sandpoint, Hamilton) post elite outdoors but fall on cost, isolation, climate, and thin church depth. And the rural Central-Texas options you feel pulled toward, Wimberley, Driftwood, and West Austin/Cuernavaca, land near the bottom under your stated priorities, dragged down by cost, demographic trajectory, the absence of a real walkable core, or the Travis County civic-order context, even though connectivity and your existing church keep Cuernavaca's individual rows respectable. That gap between their pull and their score is worth sitting with. `+
+  `<b>Caveat.</b> Crime and Christian-community scores are more reliable predictors of your lived experience than the demographic line; verify crime at the neighborhood level and visit the churches before weighting too heavily on any single row.`;
+
+buildHead(); buildSliders(); render();
+</script>
+</body>
+</html>
