@@ -203,7 +203,7 @@ const DEFAULT = Object.fromEntries(criteria.map(c=>[c.key,c.w]));
 
 const towns = [
   {nm:'Franklin, TN', meta:'Appalachian Arc',
-   s:{crime:5,local_values:5,state_politics:5,continuity:4.5,outdoors:3.5,walkable:4,energy:4.5,cost:2.5,tax:5,climate:4,aesthetics:5,commute:4.5}},
+   s:{crime:5,local_values:5,state_politics:5,continuity:4.5,outdoors:3.5,walkable:4,energy:4,cost:2.5,tax:5,climate:4,aesthetics:5,commute:4.5}},
   {nm:'Maryville, TN', meta:'Appalachian Arc',
    s:{crime:4.5,local_values:4,state_politics:5,continuity:5,outdoors:4,walkable:3.5,energy:3.5,cost:4,tax:5,climate:4,aesthetics:3,commute:3}},
   {nm:'Chattanooga, TN', meta:'Appalachian Arc',
@@ -258,8 +258,6 @@ const towns = [
    s:{crime:4,local_values:3.5,state_politics:4,continuity:4.5,outdoors:4,walkable:4,energy:3,cost:3.5,tax:3,climate:4,aesthetics:4,commute:3}},
   {nm:'New Braunfels, TX', meta:'Hill Country',
    s:{crime:3.5,local_values:3.5,state_politics:4.5,continuity:3,outdoors:3.5,walkable:4,energy:4.5,cost:4,tax:4,climate:2.5,aesthetics:3,commute:4.5}},
-  {nm:'Tyler, TX', meta:'East Texas',
-   s:{crime:3,local_values:4,state_politics:4.5,continuity:2.5,outdoors:2.5,walkable:2.5,energy:2.5,cost:4.5,tax:4,climate:2.5,aesthetics:2.5,commute:3.5}},
   {nm:'Black Mountain, NC', meta:'Appalachian Arc',
    s:{crime:4.5,local_values:2.5,state_politics:3.5,continuity:4,outdoors:4,walkable:4,energy:4,cost:3.5,tax:3.5,climate:2.5,aesthetics:3.5,commute:2.5}},
   {nm:'Sheridan, WY', meta:'The Rockies',
@@ -272,6 +270,10 @@ const towns = [
    s:{crime:3,local_values:1.5,state_politics:2,continuity:3.5,outdoors:5,walkable:4.5,energy:5,cost:1.5,tax:3,climate:3.5,aesthetics:4,commute:4}},
   {nm:'Austin, TX', meta:'Hill Country',
    s:{crime:3,local_values:2.5,state_politics:4.5,continuity:2,outdoors:3,walkable:3.5,energy:5,cost:2,tax:4,climate:2.5,aesthetics:3,commute:5}},
+  {nm:'Charleston, SC', meta:'Lowcountry',
+   s:{crime:3,local_values:3,state_politics:4.5,continuity:2.5,outdoors:3.5,walkable:5,energy:4.5,cost:2,tax:3.5,climate:2,aesthetics:5,commute:3}},
+  {nm:'Tryon, NC', meta:'Appalachian Arc',
+   s:{crime:4.5,local_values:3.5,state_politics:3.5,continuity:4.5,outdoors:4,walkable:4,energy:3,cost:4,tax:3,climate:3.5,aesthetics:4.5,commute:3}},
 ];
 
 let weights = {...DEFAULT};
